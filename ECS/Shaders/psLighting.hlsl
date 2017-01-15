@@ -65,7 +65,6 @@ struct VertexToPixel
 	float3 normal		: NORMAL;
 	float3 tangent		: TANGENT;		// XYZ tangent
 	float2 uv			: TEXCOORD;
-	float fogDistance	: DISTANCE;
 };
 
 float4 calcDirLight(float3 normal, DirectionalLight dirLight)
@@ -159,26 +158,26 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	float4 finalLighting = sumOfDiffuse + (lights.AmbientColor * 0.1f);
 
-	float3 worldPos = input.worldPos.xyz;
-	float3 cameraToVert = worldPos - input.camPosition;
-	float totalY = abs(input.camPosition.y - worldPos.y);
-	float cameraToFogY = saturate((fogHeight - input.camPosition.y) / totalY);
-	float vertToFogY = saturate((fogHeight - worldPos.y) / totalY);
-	float lengthPercent = saturate(cameraToFogY + vertToFogY);
-	float fogDistance = lengthPercent * length(cameraToVert);
+	//float3 worldPos = input.worldPos.xyz;
+	//float3 cameraToVert = worldPos - input.camPosition;
+	//float totalY = abs(input.camPosition.y - worldPos.y);
+	//float cameraToFogY = saturate((fogHeight - input.camPosition.y) / totalY);
+	//float vertToFogY = saturate((fogHeight - worldPos.y) / totalY);
+	//float lengthPercent = saturate(cameraToFogY + vertToFogY);
+	//float fogDistance = lengthPercent * length(cameraToVert);
 
 	//fog-related stuff
-	float fogFactor = 0;
-	float4 fogColor = float4(0.1, 0.3, 0, 1.0); //grey
+	//float fogFactor = 0;
+	//float4 fogColor = float4(0.1, 0.3, 0, 1.0); //grey
 
 	//linear fog
-	fogFactor = (100 - fogDistance) / (100 - 20);
-	fogFactor = clamp(fogFactor, 0.0, 1.0);
+	//fogFactor = (100 - fogDistance) / (100 - 20);
+	//fogFactor = clamp(fogFactor, 0.0, 1.0);
 
-	finalLighting = finalLighting * surfaceColor;
-	float edgeShading = 1.0f - saturate(dot(input.normal, (input.camPosition - input.worldPos)));
+	return finalLighting * surfaceColor;
+	//float edgeShading = 1.0f - saturate(dot(input.normal, (input.camPosition - input.worldPos)));
 
-	float4 edgeShade = lerp(fogColor,lerp(finalLighting, float4(0.15f, 0.2f, 0.05f, 1.0f), edgeShading),fogFactor);
+	//float4 edgeShade = lerp(fogColor,lerp(finalLighting, float4(0.15f, 0.2f, 0.05f, 1.0f), edgeShading),fogFactor);
 
-	return edgeShade;
+	//return edgeShade;
 }

@@ -31,11 +31,12 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	////fog-related stuff
 	//float fogFactor = 0;
-	float4 fogColor = float4(0.1, 0.3, 0, 1.0); //grey
+	//float4 fogColor = float4(0.1, 0.3, 0, 1.0); //grey
 
 	//											//linear fog
 	//fogFactor = (100 - fogDistance) / (100 - 20);
 	//fogFactor = clamp(fogFactor, 0.0, 1.0);
 
-	return lerp(fogColor, Sky.Sample(Sampler, input.uvw), input.uvw.y/.3);
+	//return lerp(fogColor, Sky.Sample(Sampler, input.uvw), input.uvw.y/.3);
+	return Sky.Sample(Sampler, input.uvw);
 }

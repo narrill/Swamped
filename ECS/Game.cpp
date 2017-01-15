@@ -18,73 +18,24 @@ void Game::Init() {
 	m_contentManager.Init(m_device, m_context);
 	m_renderingSystem.Init(this, m_swapChain, m_device, m_context, m_backBufferRTV, m_depthStencilView);
 	Constructors::Init(this);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 10.0f);
+	/*Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 10.0f);
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, 0.0f), 10.0f);
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(-53.05f, 0.0f, 0.0f), 10.0f);
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 53.05f), 10.0f);
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, 53.05f), 10.0f);
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(-53.05f, 0.0f, 53.05f), 10.0f);
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, -53.05f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, -53.05f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(-53.05f, 0.0f, -53.05f), 10.0f);
+	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, -53.05f), 10.0f);*/
+	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	m_toggles.push_back(Toggle('L', &m_renderingSystem.m_fxaaToggle));
 	m_toggles.push_back(Toggle('B', &m_renderingSystem.m_bloomToggle));
 	//border trees
-	for (int i = 0; i < 22; i++)
-	{
-		Constructors::CreateTree(this, DirectX::XMFLOAT3(-75.0f + fRand(-2, 3), 0.0f, -75.0f + (7.0f * i) + fRand(-2, 2)), fRand(1, 3));
-	}
-	for (int i = 0; i < 22; i++)
-	{
-		Constructors::CreateTree(this, DirectX::XMFLOAT3(-75.0f + (7.0f * i) + fRand(-2, 2), 0.0f, -75.0f + fRand(-2, 2)), fRand(1, 3));
-	}
-	for (int i = 0; i < 22; i++)
-	{
-		Constructors::CreateTree(this, DirectX::XMFLOAT3(-75.0f + (7.0f * i) + fRand(-2, 2), 0.0f, 75.0f + fRand(-2, 2)), fRand(1, 3));
-	}
-	for (int i = 0; i < 22; i++)
-	{
-		Constructors::CreateTree(this, DirectX::XMFLOAT3(75.0f + fRand(-2, 2), 0.0f, -75.0f + (7.0f * i) + fRand(-2, 2)), fRand(1, 3));
-	}
-	//distance trees
-	for (int i = 0; i < 7; i++)
-	{
-		Constructors::CreateTree2(this, DirectX::XMFLOAT3(75.0f + fRand(20, 65), 0.0f, fRand(-75.0f, 75.0f)), fRand(4, 7));
-	}
-	for (int i = 0; i < 7; i++)
-	{
-		Constructors::CreateTree2(this, DirectX::XMFLOAT3(-75.0f - fRand(20, 65), 0.0f, fRand(-75.0f, 75.0f)), fRand(4, 7));
-	}
-	for (int i = 0; i < 7; i++)
-	{
-		Constructors::CreateTree2(this, DirectX::XMFLOAT3(fRand(-75.0f, 75.0f), 0.0f, -75.0f - fRand(20, 65)), fRand(4, 7));
-	}
 	/*for (int i = 0; i < 7; i++)
 	{
 	Constructors::CreateTree(this, DirectX::XMFLOAT3(fRand(-75.0f, 75.0f), 0.0f, 75.0f + fRand(20, 65)), fRand(4, 7));
 	}*/
-	for (int i = 0; i < 20; i++)
-	{
-		Constructors::CreateTree2(this, DirectX::XMFLOAT3(15.0f * i + fRand(-3.0f, 3.0f), 0.0f, 75.0f + fRand(20, 65)), fRand(4, 7));
-	}
 
 	//rocks
-	Constructors::CreateRock(this, DirectX::XMFLOAT3(-5.0f, 0.0f, -1.0f), 4.0f);
-	Constructors::CreateRock(this, DirectX::XMFLOAT3(-5.0f, 0.0f, 0.0f), 4.0f);
-	for (int i = 0; i < 15; i++)
-	{
-		Constructors::CreateRock(this, DirectX::XMFLOAT3(fRand(-70, 70), 0.0f, fRand(-70, 70)), fRand(1, 5));
-	}
-
-	for (int i = 0; i < 15; i++)
-	{
-		Constructors::CreateTree2(this, DirectX::XMFLOAT3(fRand(-75, 75), 0.0f, fRand(-75, 75)), fRand(0.5, 4));
-	}
-
-	EntityId ghostId = Constructors::CreateGhost(this, DirectX::XMFLOAT3(0.0f, 0.0f, 70.0f), 1.0f);
-	m_ghost = Ghost(this, ghostId, m_renderingSystem.m_camera.GetPosition());
-	EntityId ghostId2 = Constructors::CreateGhost(this, DirectX::XMFLOAT3(70.0f, 0.0f, 0.0f), 1.0f);
-	m_ghost2 = Ghost(this, ghostId2, m_renderingSystem.m_camera.GetPosition());
 
 	m_playerId = Constructors::CreatePlayer(this);
 }
@@ -113,14 +64,14 @@ void Game::Update(float dt, float totalTime) {
 		for (unsigned int c = 0; c < newComponents; c++)
 		{
 			Constructors::CreateTestObject(this);
-			//Constructors::CreateTestObject2(this);
+			Constructors::CreateTestObject2(this);
 		}
 #endif
 
 		m_transformSystem.Update(this, m_timeStep);
 		m_collisionSystem.Update(this, m_timeStep);
-		m_ghost.Update(m_renderingSystem.m_camera.GetPosition(),dt);
-		m_ghost2.Update(m_renderingSystem.m_camera.GetPosition(),dt);
+		//m_ghost.Update(m_renderingSystem.m_camera.GetPosition(),dt);
+		//m_ghost2.Update(m_renderingSystem.m_camera.GetPosition(),dt);
 
 		auto& playerTransform = m_transformSystem.GetComponent1(m_playerId);
 		auto& playerPhysics = m_transformSystem.GetComponent2(m_playerId);

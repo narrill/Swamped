@@ -14,7 +14,7 @@ public:
 #if BENCHMARK >= 0
 		m_renderingComponents["testObj"] = {
 			g->m_contentManager.GetMaterial("brickLightingNormalMap"),
-			g->m_contentManager.GetMeshStore("fixedTree.obj").m_m
+			g->m_contentManager.GetMeshStore("cone.obj").m_m
 		};
 		m_renderingComponents["testObj2"] = {
 			g->m_contentManager.GetMaterial("brickLightingNormalMap"),
@@ -23,7 +23,7 @@ public:
 #endif
 		m_renderingComponents["groundPlane"] = {
 			g->m_contentManager.GetMaterial("Ground"),
-			g->m_contentManager.GetMeshStore("ground.obj").m_m
+			g->m_contentManager.GetMeshStore("Quad.obj").m_m
 		};
 
 		m_renderingComponents["testTree"] = {
@@ -57,7 +57,7 @@ public:
 		});
 
 		//get mesh and bounding box
-		MeshStore ms = game->m_contentManager.GetMeshStore("fixedTree.obj");
+		MeshStore ms = game->m_contentManager.GetMeshStore("cone.obj");
 		PhysicsComponent pc;
 		pc.m_velocity = XMFLOAT3(0, 0, 0);
 		pc.m_acceleration = XMFLOAT3(0, 0, 0);
@@ -161,7 +161,7 @@ public:
 	{
 		EntityId eid = g->m_entities.add(vector<ISystem*>{
 			&g->m_transformSystem,
-				&g->m_collisionSystem
+				//&g->m_collisionSystem
 		});
 
 		//get mesh and bounding box
@@ -183,7 +183,7 @@ public:
 
 		//create components
 		g->m_transformSystem.Create(eid, tc, pc); //transform system
-		g->m_collisionSystem.Create(eid, ms.m_bb); //collision system
+		//g->m_collisionSystem.Create(eid, ms.m_bb); //collision system
 
 		return eid;
 	}
@@ -286,16 +286,17 @@ public:
 	{
 		EntityId eid = g->m_entities.add(vector<ISystem*>{
 			&g->m_transformSystem,
-				&g->m_collisionSystem,
+				//&g->m_collisionSystem,
 				&g->m_renderingSystem
 		});
 
 		//get mesh and bounding box
-		MeshStore ms = g->m_contentManager.GetMeshStore("ground.obj");
+		//MeshStore ms = g->m_contentManager.GetMeshStore("groundPlane.obj");
 
 		PhysicsComponent pc;
 		pc.m_velocity = XMFLOAT3(0, 0, 0);
 		pc.m_acceleration = XMFLOAT3(0, 0, 0);
+		pc.m_gravity = false;
 
 		TransformComponent tc;
 		tc.m_position = position;
@@ -308,8 +309,8 @@ public:
 
 		//create components
 		g->m_transformSystem.Create(eid, tc, pc); //transform system
-		g->m_collisionSystem.Create(eid, ms.m_bb); //collision system
-		g->m_renderingSystem.Create(eid, &m_renderingComponents["ground"]); //rendering system
+		//g->m_collisionSystem.Create(eid, ms.m_bb); //collision system
+		g->m_renderingSystem.Create(eid, &m_renderingComponents["groundPlane"]); //rendering system
 
 		return eid;
 	}
