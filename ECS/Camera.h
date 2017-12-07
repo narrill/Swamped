@@ -20,19 +20,16 @@ public:
 	void SetPosition(XMFLOAT3);
 	XMFLOAT3 GetForward();
 	XMFLOAT4 rotationQuat;
-	//XMFLOAT3 GetPosition(); 
 private:
 	XMFLOAT4X4 view;
 	XMFLOAT4X4 projection;
 	XMFLOAT3 position;
-	//XMFLOAT3 direction;
 	float rotationX;
 	float rotationY;
 	EntityId cameraId;
 
 	//for moving the camera
 	DirectX::XMFLOAT3 m_forward;
-	//DirectX::XMFLOAT3 m_up;
 	DirectX::XMFLOAT3 m_right;
 	DirectX::XMFLOAT3 movement;
 };

@@ -10,7 +10,6 @@
 #include "DXCore.h"
 #include "EntityIdTypeDef.h"
 #include "Toggle.h"
-#include "Ghost.h"
 #include <vector>
 #include <chrono>
 #include <math.h>
@@ -26,9 +25,6 @@ public:
 	TransformSystem m_transformSystem;
 	RenderingSystem m_renderingSystem;
 	ParticleSystem m_particleSystem;
-
-	Ghost m_ghost;
-	Ghost m_ghost2;
 
 	EntityId m_playerId;
 
@@ -60,11 +56,9 @@ private:
 	vector<Toggle> m_toggles;
 
 	float m_accumulator = 0;
-	const float m_timeStep = 1.0 / 60;
+	const float m_timeStep = 1.0f / 60;
 
 	void OnResize();
 
 	XMFLOAT2 m_playerRotation = XMFLOAT2(0, 0);
-
-	//bool fxaaToggle = false;
 };

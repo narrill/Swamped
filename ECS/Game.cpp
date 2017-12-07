@@ -18,24 +18,9 @@ void Game::Init() {
 	m_contentManager.Init(m_device, m_context);
 	m_renderingSystem.Init(this, m_swapChain, m_device, m_context, m_backBufferRTV, m_depthStencilView);
 	Constructors::Init(this);
-	/*Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, 0.0f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(-53.05f, 0.0f, 0.0f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 53.05f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, 53.05f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(-53.05f, 0.0f, 53.05f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, -53.05f), 10.0f);
-	Constructors::CreateGround(this, DirectX::XMFLOAT3(53.05f, 0.0f, -53.05f), 10.0f);*/
 	Constructors::CreateGround(this, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	m_toggles.push_back(Toggle('L', &m_renderingSystem.m_fxaaToggle));
 	m_toggles.push_back(Toggle('B', &m_renderingSystem.m_bloomToggle));
-	//border trees
-	/*for (int i = 0; i < 7; i++)
-	{
-	Constructors::CreateTree(this, DirectX::XMFLOAT3(fRand(-75.0f, 75.0f), 0.0f, 75.0f + fRand(20, 65)), fRand(4, 7));
-	}*/
-
-	//rocks
 
 	m_playerId = Constructors::CreatePlayer(this);
 }
@@ -70,8 +55,6 @@ void Game::Update(float dt, float totalTime) {
 
 		m_transformSystem.Update(this, m_timeStep);
 		m_collisionSystem.Update(this, m_timeStep);
-		//m_ghost.Update(m_renderingSystem.m_camera.GetPosition(),dt);
-		//m_ghost2.Update(m_renderingSystem.m_camera.GetPosition(),dt);
 
 		auto& playerTransform = m_transformSystem.GetComponent1(m_playerId);
 		auto& playerPhysics = m_transformSystem.GetComponent2(m_playerId);
@@ -180,13 +163,10 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
 	auto& playerTransform = m_transformSystem.GetComponent1(m_playerId);
-	//static int lastPos[2] = { x,y };
 	if (buttonState & 0x0002)
 	{
-		//XMStoreFloat4(&playerTransform.m_rotation, XMQuaternionMultiply(XMQuaternionMultiply(XMQuaternionRotationRollPitchYaw(0, XM_PI*( y - prevMousePos.y)/180, 0), XMLoadFloat4(&playerTransform.m_rotation)),XMQuaternionRotationRollPitchYaw(0,0, XM_PI*(x - prevMousePos.x) / 180)));
-		  //(x - prevMousePos.x), (y - prevMousePos.y);
-		m_playerRotation.x += .3*XM_PI*(y - prevMousePos.y) / 180;
-		m_playerRotation.y += .3*XM_PI*(x - prevMousePos.x) / 180;
+		m_playerRotation.x += .3f*XM_PI*(y - prevMousePos.y) / 180;
+		m_playerRotation.y += .3f*XM_PI*(x - prevMousePos.x) / 180;
 		XMStoreFloat4(&playerTransform.m_rotation, XMQuaternionRotationRollPitchYaw(m_playerRotation.x, m_playerRotation.y, 0));
 	}
 

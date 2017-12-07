@@ -8,23 +8,11 @@
 
 using namespace DirectX;
 
-//CollisionMask MakeCollisionMask(vector<CollisionType> types) {
-//	CollisionMask mask;
-//
-//	for (auto type : types) {
-//		mask = mask | 1 << type;
-//	}
-//
-//	return mask;
-//}
-
 CollisionSystem::CollisionSystem() {
 #if BENCHMARK >=0
 	m_collisionFunctions.push_back(std::make_tuple(CollisionType::test1, CollisionType::test2, &CollisionFunctions::NoOpCollision));
 	m_collisionFunctions.push_back(std::make_tuple(CollisionType::test1, CollisionType::test1, &CollisionFunctions::NoOpCollision));
-	//m_collisionFunctions.push_back(std::make_tuple(CollisionType::test2, CollisionType::test2, &CollisionFunctions::NoOpCollision));
 #endif
-	//m_collisionFunctions.push_back(std::make_tuple(CollisionType::ghost, CollisionType::player, &CollisionFunctions::EndState));
 }
 
 CollisionSystem::~CollisionSystem() {
@@ -49,8 +37,6 @@ void CollisionSystem::Update(Game * game, float dt) {
 	FreeVector<TransformComponent> & tcs = ts->GetComponentList1();
 	TransformComponent * tc;
 	XMVECTOR original;
-	//XMVECTOR rotation;
-	XMFLOAT3 rotatedObb[8];
 	XMMATRIX modelToWorld;
 	XMVECTOR max;
 	XMVECTOR min;
@@ -66,19 +52,12 @@ void CollisionSystem::Update(Game * game, float dt) {
 	//loop through bounding boxes
 	unsigned int transformIndex = 0;
 	for (unsigned int c = 0; c < m_collapsedCount; c++) {
-		//skip inactives
-		//if (!m_componentData[c].m_active)
-		//	continue;
 
 		cc = &m_collapsedComponents[c].m_component; //get component
 		entityId = m_collapsedComponents[c].m_entityId; //get entityID
 
-		//search for the index of this component's corresponding transform
-		//ts->SearchForEntityId(transformIndex, entityId);
-
 		//save the transform and its quat
-		tc = &ts->GetComponent1(entityId);//&tcs[transformIndex];
-		//rotation = XMLoadFloat4(&tc->m_rotation);
+		tc = &ts->GetComponent1(entityId);
 		modelToWorld = TransformSystem::GetMatrix(*tc);
 
 		//reset max and min values
@@ -104,12 +83,10 @@ void CollisionSystem::Update(Game * game, float dt) {
 			ts->GetComponentList2()[transformIndex].m_velocity.y = 0;
 		}
 		//store final translated max and min in aabb list
-		//position = XMLoadFloat3(&tc->m_position);
 		XMStoreFloat3(&m_aabbs[c].m_component.m_max, max);
 		XMStoreFloat3(&m_aabbs[c].m_component.m_min, min);
 		globalMax = XMVectorMax(globalMax, max);
 		globalMin = XMVectorMin(globalMin, min);
-		//m_aabbs[c].m_component.m_cm = cc->m_cm;
 		m_aabbs[c].m_component.m_collisionType = cc->m_collisionType;
 		m_aabbs[c].m_entityId = entityId;
 		m_aabbs[c].m_handle = m_collapsedComponents[c].m_handle;
@@ -119,20 +96,14 @@ void CollisionSystem::Update(Game * game, float dt) {
 	globalMin = XMVectorSubtract(globalMin, globalPad);
 
 	//prep spatial hash grid
-	//XMStoreFloat3(&m_mapMin, globalMin);
 	XMVECTOR dimensions = XMVectorSubtract(globalMax, globalMin);
-	//XMVECTOR cellCounts = XMVectorScale(m_collapsedCount, 1.0f / DESIRED_OBJECT_DENSITY);
-	//cellCounts = XMVectorCeiling(cellCounts);
 	float cellDivisions = ceilf(static_cast<float>(m_collapsedCount) / DESIRED_OBJECT_DENSITY);
 	dimensions = XMVectorScale(dimensions, 1.0f/cellDivisions);
-	//XMStoreFloat3(&m_cellDimensions, dimensions);
 	m_cellCounts = XMFLOAT3(cellDivisions, cellDivisions, cellDivisions);
-	//XMStoreFloat3(&m_cellCounts, cellCounts);
 	for (unsigned int c = 0; c < m_spatialHashGrid.size(); c++)
 		for (unsigned int n = 0; n < CollisionType::NUMTYPES;n++)
 			m_spatialHashGrid[c][n].clear();
 	m_spatialHashGrid.resize(static_cast<size_t>(m_cellCounts.x * m_cellCounts.y * m_cellCounts.z), vector<ClearVector<CollapsedComponent<MaxMin>>>(CollisionType::NUMTYPES));
-	//m_cellCrossers.clear();
 
 	//populate spatial hash grid
 #ifdef _DEBUG
@@ -160,9 +131,6 @@ void CollisionSystem::Update(Game * game, float dt) {
 			gridIndices.push(static_cast<unsigned int>(point.z * m_cellCounts.x * m_cellCounts.y + point.y * m_cellCounts.x + point.x), true);
 		}
 		for (unsigned int n = 0; n < gridIndices.size(); n++) {
-			//auto one = m_spatialHashGrid[gridIndices[n]];
-			//auto two = one[caabb.m_component.m_ct];
-			//two.add({ aabb, caabb.m_entityId, caabb.m_handle });
 			m_spatialHashGrid[gridIndices[n]][caabb.m_component.m_collisionType].add({ aabb, caabb.m_entityId, caabb.m_handle });
 		}
 #ifdef _DEBUG
@@ -199,7 +167,6 @@ void CollisionSystem::Update(Game * game, float dt) {
 				MaxMin aabb1 = caabb1.m_component;
 				CollapsedComponent<MaxMin> caabb2;
 				MaxMin aabb2;
-				//pair<unsigned int, unsigned int> p = (caabb1.m_entityId < caabb2.m_entityId) ? std::make_pair(caabb1.m_entityId, caabb2.m_entityId) : std::make_pair(caabb2.m_entityId, caabb1.m_entityId);
 				for (unsigned int n = (selfCheck) ? c + 1 : 0; n < bucketCv[ct2].size(); n++) {
 					caabb2 = bucketCv[ct2][n];
 					aabb2 = caabb2.m_component;
@@ -214,15 +181,6 @@ void CollisionSystem::Update(Game * game, float dt) {
 						m_registeredCollisions[caabb1.m_handle].add(caabb2.m_entityId);
 						m_registeredCollisions[caabb2.m_handle].add(caabb1.m_entityId);
 						m_collisionMap[cf].push_back(std::make_pair(caabb1.m_entityId, caabb2.m_entityId));
-						//Get correct collision function and emplace it into the collision map along with an empty lock vector
-						/*vector<CollisionFunction> cfs = CollisionFunctions::GetCollisionFunction(aabb1.m_cm, aabb2.m_cm);
-						for (auto cf : cfs)
-						{
-							//auto pair = std::make_pair(cf, LockVector<std::pair<unsigned int, unsigned int>>());
-							//m_collisionMap.emplace(pair);
-							//push the entityIDs to the vector under this collision function
-							m_collisionMap[cf].push_back(std::make_pair(bucketCv[c].m_entityId, bucketCv[n].m_entityId));
-						}*/
 					}
 				}
 			}

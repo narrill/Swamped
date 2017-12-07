@@ -10,12 +10,7 @@ Camera::Camera(XMFLOAT3 pos) {
 	position = pos;
 
 	m_forward = DirectX::XMFLOAT3(0, 0, 1.0f);
-	//m_up = DirectX::XMFLOAT3(0, 1.0f, 0);
 	m_right = DirectX::XMFLOAT3(1.0f, 0, 0);
-
-	//cameraId = Constructors::CreatePlayer()
-	//direction = XMFLOAT3(0, 0, 1);
-	//Update();
 }
 
 Camera::Camera() {
@@ -68,15 +63,12 @@ void Camera::Update(float dt) {
 
 	XMFLOAT3 forward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 up = XMFLOAT3(0, 1, 0);
-	//XMVECTOR rotationQuaternion = XMQuaternionRotationRollPitchYaw(rotationX, rotationY, 0);
 	XMVECTOR rotationQuaternion = XMLoadFloat4(&rotationQuat);
 	XMVECTOR newDirection = XMLoadFloat3(&forward);
 	newDirection = XMVector3Rotate(newDirection, rotationQuaternion);
 	XMMATRIX newView = XMMatrixLookToLH(XMLoadFloat3(&position), newDirection, XMLoadFloat3(&up));
 
-	//DirectX::XMStoreFloat3(&forward, newDirection);
 	XMStoreFloat3(&m_forward, newDirection);
-	//XMStoreFloat3(&m_right)
 	XMStoreFloat4x4(&view, XMMatrixTranspose(newView));
 
 

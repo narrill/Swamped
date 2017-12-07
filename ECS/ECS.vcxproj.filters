@@ -57,9 +57,6 @@
     <ClCompile Include="CollisionFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ghost.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Constructors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -151,9 +148,6 @@
     </ClInclude>
     <ClInclude Include="CollapsedComponent.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ghost.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EntityIdTypeDef.h">
       <Filter>Header Files</Filter>

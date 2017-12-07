@@ -364,13 +364,9 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 		vertexShader->SetMatrix4x4("view", m_camera.GetView());
 		vertexShader->SetMatrix4x4("projection", m_camera.GetProjection());
 		vertexShader->SetFloat3("cameraPos", m_camera.GetPosition());
-		//vertexShader->SetFloat("fogHeight", 20);
 
 		vertexShader->CopyAllBufferData();
 
-		//pixelShader->SetData("dirLight1", &m_dirLights[0], sizeof(DirectionalLight));
-		//pixelShader->SetData("dirLight2", &m_dirLights[1], sizeof(DirectionalLight));
-		//pixelShader->SetData("dirLight3", &m_dirLights[2], sizeof(DirectionalLight));
 		pixelShader->SetData("lights", &m_lights, sizeof(Lights));
 		pixelShader->SetShaderResourceView("Texture", rc.m_material.textureView);
 		pixelShader->SetShaderResourceView("NormalMap", rc.m_material.normalMap);
@@ -424,7 +420,6 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 
 	skyPS->SetShaderResourceView("Sky", skySRV);
 	skyPS->SetSamplerState("Sampler", m_skyBox.m_material.samplerState);
-	//skyPS->SetFloat3("cameraLook", m_camera.GetForward());
 	skyPS->SetFloat("fogHeight", 20);
 	skyPS->SetFloat3("cameraPos", m_camera.GetPosition());
 	skyPS->CopyAllBufferData();
@@ -487,9 +482,6 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 		m_context->IASetVertexBuffers(0, 1, &particleBuffer, &stride, &offset);
 		m_context->OMSetBlendState(m_particleBlendState, 0, 0xffffffff);
 		m_context->OMSetDepthStencilState(m_particleDepthStencilState, 0);
-		//m_context->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-
-		//m_context->RSSetState()
 
 		m_context->Draw(particleCount, 0);
 
@@ -518,18 +510,17 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 		brightPixelsPS->SetShader();
 		brightPixelsPS->SetShaderResourceView("InitialRender", m_initialRenderSRV);
 		brightPixelsPS->SetSamplerState("Sampler", brightPixels.samplerState);
-		brightPixelsPS->SetFloat("brightnessMin", .2);
-		brightPixelsPS->SetFloat("brightnessMax", .5);
+		brightPixelsPS->SetFloat("brightnessMin", .2f);
+		brightPixelsPS->SetFloat("brightnessMax", .5f);
 		brightPixelsPS->SetFloat("exponent", 1.5);
 		brightPixelsPS->CopyAllBufferData();
 
 		//then draw
-		//ID3D11Buffer* nothing1 = 0;
 		ID3D11Buffer* nothing = 0;
 		m_context->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
 		m_context->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
 
-		////draw the triangle that encompasses the whole screen
+		//draw the triangle that encompasses the whole screen
 		m_context->Draw(3, 0);
 
 		//unbind initialRender from brightPixelPS so we can write to it next frame
@@ -552,15 +543,11 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 		blurPS->CopyAllBufferData();
 
 		//then draw
-		//ID3D11Buffer* nothing2 = 0;
 		m_context->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
 		m_context->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
 
 		//draw the triangle that encompasses the whole screen
 		m_context->Draw(3, 0);
-
-		//brightPixelsPS->SetShaderResourceView("InitialRender", 0);
-		//blurPS->SetShaderResourceView("Blur", 0);
 
 
 		//the last pass
@@ -577,11 +564,10 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 		bloomPS->CopyAllBufferData();
 
 		//then draw
-		//ID3D11Buffer* nothing3 = 0;
 		m_context->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
 		m_context->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
 
-		////draw the triangle that encompasses the whole screen
+		//draw the triangle that encompasses the whole screen
 		m_context->Draw(3, 0);
 
 		//unbind initialRender from bloomPS so we can write to it next frame
@@ -592,7 +578,6 @@ void RenderingSystem::Update(Game * game, float dt, float totalTime) {
 
 		m_context->OMSetRenderTargets(1, &m_backBufferRTV, 0);
 
-		//XMFLOAT4 rcpFrame = XMFLOAT4(1.0f / game->GetWidth(), 1.0f / game->GetHeight(), 0.0f, 0.0f);
 		m_fxaaVS->SetShader();
 		m_fxaaPS->SetShader();
 		m_fxaaPS->SetFloat4("rcpFrame", XMFLOAT4(1.0f / game->GetWidth(), 1.0f / game->GetHeight(), 0.0f, 0.0f));
